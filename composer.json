@@ -1,0 +1,12 @@
+{
+    "name": "interwho/predictomater",
+    "description": "PennApps XII F2015 Project",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Justin Paulin",
+            "email": "hello@justinpaulin.com"
+        }
+    ],
+    "require": {}
+}

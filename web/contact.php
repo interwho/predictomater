@@ -19,3 +19,5 @@ if (mail($to, $subject, $message, $headers)) {
 } else {
     echo "Message failed!";
 }
+?>
+<meta http-equiv="refresh" content="3; url=/" />

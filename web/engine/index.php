@@ -1,8 +1,13 @@
+<?php
+// Retrieve scores from API Interpreters
+$currentPrice = shell_exec(escapeshellcmd('/home/predict/api/raw/currentPrice.py'));
+$currentTrend = shell_exec(escapeshellcmd('/home/predict/api/interpreted/currentTrend.py'));
+$seasonalImpact = shell_exec(escapeshellcmd('/home/predict/api/interpreted/seasonalImpact.py'));
+$inventoryWell = shell_exec(escapeshellcmd('/home/predict/api/interpreted/apiInventory.py'));
+$econActivity = shell_exec(escapeshellcmd('/home/predict/api/interpreted/economicIndicators.py'));
+$unemploymentClaims = shell_exec(escapeshellcmd('/home/predict/api/interpreted/unemploymentIndicators.py'));
+?>
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html>
   <head>
     <meta charset="utf-8">
@@ -18,12 +23,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
-    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-          page. However, you can choose any other skin. Make sure you
-          apply the skin class to the body tag so the changes take effect.
-    -->
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
+      <script type="text/javascript">
+          function recalculate() {
+              var v1 = parseFloat(document.getElementById("s1").innerHTML) * parseFloat(document.getElementById("w1").value);
+              var v2 = parseFloat(document.getElementById("s2").innerHTML) * parseFloat(document.getElementById("w2").value);
+              var v3 = parseFloat(document.getElementById("s3").innerHTML) * parseFloat(document.getElementById("w3").value);
+              var v4 = parseFloat(document.getElementById("s4").innerHTML) * parseFloat(document.getElementById("w4").value);
+              var v5 = parseFloat(document.getElementById("s5").innerHTML) * parseFloat(document.getElementById("w5").value);
 
+              var score = (v1 + v2 + v3 + v4 + v5)/5;
+
+              if(score > 65) {
+                  document.getElementById("recommendation").innerHTML = "LONG";
+                  document.getElementById("recommendation").style.color = "green";
+              } else {
+                  if(score > 35) {
+                      document.getElementById("recommendation").innerHTML = "NEUTRAL";
+                      document.getElementById("recommendation").style.color = "#ffff00";
+                  } else {
+                      document.getElementById("recommendation").innerHTML = "SHORT";
+                      document.getElementById("recommendation").style.color = "red";
+                  }
+              }
+
+              document.getElementById("score").innerHTML = score.toString();
+              return true;
+          }
+      </script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -31,26 +58,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <!--
-  BODY TAG OPTIONS:
-  =================
-  Apply one or more of the following classes to get the
-  desired effect
-  |---------------------------------------------------------|
-  | SKINS         | skin-blue                               |
-  |               | skin-black                              |
-  |               | skin-purple                             |
-  |               | skin-yellow                             |
-  |               | skin-red                                |
-  |               | skin-green                              |
-  |---------------------------------------------------------|
-  |LAYOUT OPTIONS | fixed                                   |
-  |               | layout-boxed                            |
-  |               | layout-top-nav                          |
-  |               | sidebar-collapse                        |
-  |               | sidebar-mini                            |
-  |---------------------------------------------------------|
-  -->
   <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
 
@@ -82,40 +89,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <!-- Sidebar user panel (optional) -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+              <img src="dist/img/avatar.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p>Alexander Pierce</p>
+              <p>Welcome!</p>
               <!-- Status -->
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
           </div>
-
-          <!-- search form (Optional) -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
-              </span>
-            </div>
-          </form>
-          <!-- /.search form -->
-
-          <!-- Sidebar Menu -->
-          <ul class="sidebar-menu">
-            <li class="header">HEADER</li>
-            <!-- Optionally, you can add icons to the links -->
-            <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
-            <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
-            <li class="treeview">
-              <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>
-              <ul class="treeview-menu">
-                <li><a href="#">Link in level 2</a></li>
-                <li><a href="#">Link in level 2</a></li>
-              </ul>
-            </li>
-          </ul><!-- /.sidebar-menu -->
         </section>
         <!-- /.sidebar -->
       </aside>
@@ -125,19 +106,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Page Header
-            <small>Optional description</small>
+            WTI Crude Oil Futures
+            <small>Relational Analysis</small>
           </h1>
-          <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-            <li class="active">Here</li>
-          </ol>
         </section>
 
         <!-- Main content -->
         <section class="content">
 
-          <!-- Your Page Content Here -->
+            <h2>$<?php echo $currentPrice; ?> <small>per barrel</small></h2>
+            <h2>Overall Recommendation: <b><span style="color: #ffff00;" id="recommendation">NEUTRAL</span></b> <small>(Score: <span id="score">50</span>)</small></h2>
+            
+            <style type="text/css">
+                .tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color: #729ea5;border-collapse: collapse;}
+                .tftable th {font-size:12px;background-color:#acc8cc;border-width: 1px;padding: 8px;border-style: solid;border-color: #729ea5;text-align:left;}
+                .tftable tr {background-color:#ffffff;}
+                .tftable td {font-size:12px;border-width: 1px;padding: 8px;border-style: solid;border-color: #729ea5;}
+                .tftable tr:hover {background-color:#ffff99;}
+            </style>
+
+            <table class="tftable" border="1">
+                <tr><th>Rating Factor</th><th>Score</th><th>Weight</th></tr>
+                <tr><td>Current Trend w/Volatility</td><td><span id="s1"><?php echo $currentTrend; ?></span></td><td><input id="w1" value="1.00" onchange="recalculate();"></td></tr>
+                <tr><td>Seasonal Impact</td><td><span id="s2"><?php echo $seasonalImpact; ?></span></td><td><input id="w2" value="1.00" onchange="recalculate();"></td></tr>
+                <tr><td>Inventories &amp; Well Counts</td><td><span id="s3"><?php echo $inventoryWell; ?></span></td><td><input id="w3" value="1.00" onchange="recalculate();"></td></tr>
+                <tr><td>New Economic Activity</td><td><span id="s4"><?php echo $econActivity; ?></span></td><td><input id="w4" value="1.00" onchange="recalculate();"></td></tr>
+                <tr><td>Unemployment Claims</td><td><span id="s5"><?php echo $unemploymentClaims; ?></span></td><td><input id="w5" value="1.00" onchange="recalculate();"></td></tr>
+            </table>
 
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
@@ -146,71 +141,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <footer class="main-footer">
         <!-- To the right -->
         <div class="pull-right hidden-xs">
-          Anything you want
+          Lets make money.
         </div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2015 <a href="#">Company</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2015 <a href="#">Predictomater</a>.</strong> All rights reserved.
       </footer>
 
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Create the tabs -->
-        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-          <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-          <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-        </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <!-- Home tab content -->
-          <div class="tab-pane active" id="control-sidebar-home-tab">
-            <h3 class="control-sidebar-heading">Recent Activity</h3>
-            <ul class="control-sidebar-menu">
-              <li>
-                <a href="javascript::;">
-                  <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-                  <div class="menu-info">
-                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-                    <p>Will be 23 on April 24th</p>
-                  </div>
-                </a>
-              </li>
-            </ul><!-- /.control-sidebar-menu -->
 
-            <h3 class="control-sidebar-heading">Tasks Progress</h3>
-            <ul class="control-sidebar-menu">
-              <li>
-                <a href="javascript::;">
-                  <h4 class="control-sidebar-subheading">
-                    Custom Template Design
-                    <span class="label label-danger pull-right">70%</span>
-                  </h4>
-                  <div class="progress progress-xxs">
-                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-                  </div>
-                </a>
-              </li>
-            </ul><!-- /.control-sidebar-menu -->
-
-          </div><!-- /.tab-pane -->
-          <!-- Stats tab content -->
-          <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div><!-- /.tab-pane -->
-          <!-- Settings tab content -->
-          <div class="tab-pane" id="control-sidebar-settings-tab">
-            <form method="post">
-              <h3 class="control-sidebar-heading">General Settings</h3>
-              <div class="form-group">
-                <label class="control-sidebar-subheading">
-                  Report panel usage
-                  <input type="checkbox" class="pull-right" checked>
-                </label>
-                <p>
-                  Some information about this general settings option
-                </p>
-              </div><!-- /.form-group -->
-            </form>
-          </div><!-- /.tab-pane -->
-        </div>
-      </aside><!-- /.control-sidebar -->
       <!-- Add the sidebar's background. This div must be placed
            immediately after the control sidebar -->
       <div class="control-sidebar-bg"></div>
@@ -225,9 +162,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- AdminLTE App -->
     <script src="dist/js/app.min.js"></script>
 
-    <!-- Optionally, you can add Slimscroll and FastClick plugins.
-         Both of these plugins are recommended to enhance the
-         user experience. Slimscroll is required when using the
-         fixed layout. -->
+    <script type="text/javascript"> recalculate(); </script>
   </body>
 </html>
